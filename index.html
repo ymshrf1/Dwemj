@@ -6,7 +6,7 @@
 <title>Ymshrf_emj</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
 
@@ -31,10 +31,8 @@
     <button class="tab-btn" onclick="switchTab('manual')">Manual (JSON)</button>
   </div>
 
-  <!-- AUTO PANEL -->
   <div class="panel active" id="panel-auto">
 
-    <!-- STEP 1: TOKEN -->
     <div class="step active" id="step-token">
       <div class="card">
         <div class="card-label">Step 1 — Authentication</div>
@@ -61,7 +59,6 @@
       </div>
     </div>
 
-    <!-- STEP 2: SERVER -->
     <div class="step" id="step-server">
       <button class="back-btn" onclick="goBack('step-token')">← back</button>
       <div class="card">
@@ -74,7 +71,6 @@
       </div>
     </div>
 
-    <!-- STEP 3: SELECT -->
     <div class="step" id="step-select">
       <button class="back-btn" onclick="goBack('step-server')">← back</button>
       <div class="card">
@@ -156,7 +152,6 @@
 
   </div>
 
-  <!-- MANUAL PANEL -->
   <div class="panel" id="panel-manual">
     <div class="card">
       <div class="card-label">Guild JSON</div>
@@ -189,6 +184,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script src="assets/app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
