@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ymshrf_emj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div class="noise"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    <div class="logo-text">Ymshrf<span>_emj</span></div>
+  </div>
+  <div class="header-badge">DISCORD EMOJI DOWNLOADER</div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Download Server<br>Emojis & Stickers</h1>
+    <p>// select what you want — get a ZIP</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('auto')">Auto (Token)</button>
+    <button class="tab-btn" onclick="switchTab('manual')">Manual (JSON)</button>
+  </div>
+
+  <!-- AUTO PANEL -->
+  <div class="panel active" id="panel-auto">
+
+    <!-- STEP 1: TOKEN -->
+    <div class="step active" id="step-token">
+      <div class="card">
+        <div class="card-label">Step 1 — Authentication</div>
+        <div class="token-warn">
+          <span>⚠</span>
+          <span>Your token is only used to fetch your servers & emojis — it is never stored or sent anywhere else. <button class="howto-toggle" onclick="toggleHowto()">How to get your token?</button></span>
+        </div>
+        <div class="howto-box" id="howto-box">
+          1. Open Discord (browser or desktop app)<br>
+          2. Press <code>F12</code> → Console tab<br>
+          3. Type <code>allow pasting</code> and press Enter<br>
+          4. Paste this and press Enter:<br><br>
+          <code style="word-break:break-all">{webpackChunkdiscord_app.push([[Math.random()],{},e=>{e.b&&(m=Object.values(e.c))}]);let e=m.find((e=>!e?.exports?.messagesLoader&&e?.exports?.default?.getToken))?.exports?.default?.getToken?.();e?console.log(`"${e}"`):console.warn("Token not found.")}</code><br><br>
+          5. Copy the value between quotes — that's your token.
+        </div>
+        <div style="margin-top:16px">
+          <div class="input-wrap" style="margin-bottom:16px">
+            <input type="password" id="token-input" placeholder="mfa.ABcd1e-jKlmno..." autocomplete="off" />
+          </div>
+          <button class="btn btn-primary" id="btn-continue" onclick="doLogin()">
+            <span class="btn-text">Continue →</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: SERVER -->
+    <div class="step" id="step-server">
+      <button class="back-btn" onclick="goBack('step-token')">← back</button>
+      <div class="card">
+        <div class="card-label">Step 2 — Choose a Server</div>
+        <div id="guild-grid" class="guild-grid"></div>
+        <div class="divider"></div>
+        <button class="btn btn-primary" id="btn-load-emojis" onclick="loadEmojis()" disabled>
+          <span class="btn-text">Load Emojis & Stickers →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: SELECT -->
+    <div class="step" id="step-select">
+      <button class="back-btn" onclick="goBack('step-server')">← back</button>
+      <div class="card">
+        <div class="card-label">Step 3 — Select Content</div>
+
+        <div class="type-toggles">
+          <div class="type-toggle active" id="toggle-emojis" onclick="toggleType('emojis')">
+            <div class="toggle-icon">😄</div>
+            <div class="toggle-label">Emojis</div>
+            <div class="toggle-count" id="toggle-emojis-count">0</div>
+          </div>
+          <div class="type-toggle active" id="toggle-stickers" onclick="toggleType('stickers')">
+            <div class="toggle-icon">🎨</div>
+            <div class="toggle-label">Stickers</div>
+            <div class="toggle-count" id="toggle-stickers-count">0</div>
+          </div>
+        </div>
+
+        <div id="section-emojis">
+          <div class="search-row">
+            <div class="input-wrap">
+              <input type="text" id="emoji-search" placeholder="Search emojis..." oninput="filterEmojis()" />
+            </div>
+            <div class="select-actions">
+              <button class="action-btn" onclick="selectAllEmojis()">All</button>
+              <button class="action-btn" onclick="deselectAllEmojis()">None</button>
+            </div>
+          </div>
+          <div class="emoji-grid" id="emoji-grid"></div>
+        </div>
+
+        <div id="section-stickers" style="margin-top:20px">
+          <div class="search-row">
+            <div class="input-wrap">
+              <input type="text" id="sticker-search" placeholder="Search stickers..." oninput="filterStickers()" />
+            </div>
+            <div class="select-actions">
+              <button class="action-btn" onclick="selectAllStickers()">All</button>
+              <button class="action-btn" onclick="deselectAllStickers()">None</button>
+            </div>
+          </div>
+          <div class="sticker-grid" id="sticker-grid"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="summary-bar">
+          <div class="summary-counts">
+            <div class="summary-count">Emojis: <span id="sel-emoji-count">0</span></div>
+            <div class="summary-count">Stickers: <span id="sel-sticker-count">0</span></div>
+          </div>
+          <div class="summary-count" id="sel-total-size"></div>
+        </div>
+
+        <div id="progress-wrap" class="progress-wrap" style="display:none">
+          <div class="progress-label">
+            <span id="progress-label-text">Downloading...</span>
+            <span class="progress-count" id="progress-nums">0 / 0</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+          </div>
+        </div>
+
+        <div id="msg-success" class="msg msg-success">
+          <span class="msg-icon">✓</span>
+          <span id="msg-success-text">Done! Your ZIP is ready.</span>
+        </div>
+        <div id="msg-error-select" class="msg msg-error">
+          <span class="msg-icon">✕</span>
+          <span id="msg-error-text">Something went wrong.</span>
+        </div>
+
+        <button class="btn btn-primary" id="btn-download" onclick="startDownload()">
+          <span class="btn-text">Download ZIP</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MANUAL PANEL -->
+  <div class="panel" id="panel-manual">
+    <div class="card">
+      <div class="card-label">Guild JSON</div>
+      <p style="font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:14px; line-height:1.7;">
+        Make a GET request to <code style="color:var(--p3)">https://discord.com/api/v10/guilds/:id</code> with your user token, then paste the JSON here.
+      </p>
+      <textarea class="manual-textarea" id="manual-json" placeholder='{"id":"...","emojis":[...],"stickers":[]}'></textarea>
+      <div style="margin-top:16px">
+        <button class="btn btn-primary" onclick="doManual()">
+          <span class="btn-text">Parse & Select</span>
+        </button>
+      </div>
+      <div id="msg-manual-error" class="msg msg-error" style="margin-top:12px">
+        <span class="msg-icon">✕</span>
+        <span id="msg-manual-error-text">Error</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="msg-global-error" class="msg msg-error" style="margin-top:12px">
+    <span class="msg-icon">✕</span>
+    <span id="msg-global-error-text">Error</span>
+  </div>
+
+</main>
+
+<footer>
+  <span>Ymshrf_emj</span> — all emojis & stickers stay on your device
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
